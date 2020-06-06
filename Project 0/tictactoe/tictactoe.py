@@ -10,7 +10,7 @@ X = "X"
 O = "O"
 EMPTY = None
 
-#play=0
+
 def counter(board , val):
     c=0
     for i in board:
@@ -45,6 +45,8 @@ def player(board):
     """
     Returns player who has the next turn on a board.
     """
+    #raise NotImplementedError
+    #Checking Number of X and O to Choose X or O chance
     P1=counter(board,X)
     P2=counter(board,O)
     if P1 == P2:
@@ -58,13 +60,13 @@ def player(board):
     else :
         return 2
     """
-    #raise NotImplementedError
-    #return 
-
+    
 def actions(board):
     """
     Returns set of all possible actions (i, j) available on the board.
     """
+    #raise NotImplementedError
+    #Checking available actions from Board
     pos=[]
     for i , row in enumerate(board):
         for  j , col in enumerate(row):
@@ -72,37 +74,28 @@ def actions(board):
                 pos.append((i,j))
     return set(pos)
 
-    #raise NotImplementedError
 
 
 def result(board, action):
     """
     Returns the board that results from making move (i, j) on the board.
     """
-    """
-    if board[action[0],action[1]] != EMPTY:
-        if play%2 == 1:
-            board[action[0],action[1]]=X
-        else:
-            board[action[0],action[1]]=O
-        return board
-    else:
-        raise Exception("Invalid Move")
-    """
+    #raise NotImplementedError
+    #Checking Player
     play=player(board)
     if play == X:
         ans=X
     else:
         ans=O
-    #Nb=board.copy()
+    #Making a deep copy of Board
     Nb=copy.deepcopy(board)
+    #Putting X or O on the Board
     if Nb[action[0]][action[1]] == EMPTY:
         Nb[action[0]][action[1]] = ans
         return Nb
     else:
         raise Exception("Invalid Move")
 
-    #raise NotImplementedError
 
 
 def winner(board):
@@ -111,7 +104,9 @@ def winner(board):
     """
 
     #raise NotImplementedError
+    # checker Funtion give Bools with all possible Row/Column/Diagonal for Movement
     [r0,r1,r2,c0,c1,c2,d0,d1] =checker(board)
+    #If we got the Winner then We have to Retrun Symbol
     if r0 or r1 or r2 or c0 or c1 or c2 or d0 or d1:
         ans = [r0,r1,r2,c0,c1,c2,d0,d1]
         if ans.index(True) in [0,3,6]:
@@ -120,6 +115,7 @@ def winner(board):
             return board[1][1]
         else:
             return board[2][2]
+    #Else No one is Winner
     else:
         return (None)
 
@@ -127,19 +123,24 @@ def terminal(board):
     """
     Returns True if game is over, False otherwise.
     """
+    #raise NotImplementedError
+    
+    #From Checker We will be Getting Win / Continue State of Board
     [r0,r1,r2,c0,c1,c2,d0,d1] =checker(board)
-
+    
+    #Returning if True When End or No Moves Left
     if r0 or r1 or r2 or c0 or c1 or c2 or d0 or d1 or counter(board,None)==0:
         return (True)
     else:
         return (False)
-    #raise NotImplementedError
 
 
 def utility(board):
     """
     Returns 1 if X has won the game, -1 if O has won, 0 otherwise.
     """
+    #raise NotImplementedError
+    #Used By MinMax Procedural
     ans=winner(board)
     if ans == X:
         return (1)
@@ -147,12 +148,12 @@ def utility(board):
         return (-1)
     else:
         return (0)
-    #raise NotImplementedError
 
-
+#Trial Function to Implement Easy(Random) Moves on Runner 155 line change move=ttt.easy()
 def easy(board):
     pos=list(actions(board))
     return random.choice(pos)
+
 #######################################################################################
 ################################MIN MAX Implementation#################################
 #######################################################################################
@@ -160,63 +161,75 @@ def minimax(board):
     """
     Returns the optimal action for the current player on the board.
     """
-    #if AI == X :
-    #    goal = 1
-    #else :
-    #    goal = -1
-    #pos=list(actions(board))
+    #raise NotImplementedError
+    
+    #Logic for MinMax
+        #if AI == X :
+        #    goal = 1
+        #else :
+        #    goal = -1
+        #pos=list(actions(board))
     pos=optimise(board,player(board))
     return random.choice(pos)
-    ####################################Unable to choose from Empty set
-    #raise NotImplementedError
-
 
 def optimise(board,AI):
+    #check AI
     if AI == X:
         NAI = O
     else:
         NAI = X
-    #ans=[]
+    #List for inculcating Moves and Their Min-Max Value
     ans = []
-        
+    #Available Option
     pos=list(actions(board))
+    #Checking Move
     for move in pos :
-    #   move=random.choice(list(pos))
         Nb=result(board,move)
+        #If Game Doesn't End Then Fighter Function for recurring
         if terminal(Nb) is False:
             ans.append(fighter(Nb,NAI))
+        #Else Game End
         else:
             ans.append(utility(Nb))
+    #Optimal Move is Checked
     optimal=[]
     for i ,check in enumerate(ans):
+        #If AI is X then Try for Maximize 
         if AI == X :
             if check is max(ans):
                 optimal.append(pos[i])
+        #If AI is O then Try for Minmize
         else:
             if check is min(ans):
                 optimal.append(pos[i])
     return optimal
 
+#Recursive Function for Endding Check
 def fighter(board,AI):
+    #Checking AI
     if AI == X:
         NAI = O
     else:
         NAI = X
+    #Checking Move
     ans =[]
     pos=list(actions(board))
     for move in pos :
         Nb=result(board,move)
+        #If Game Not End the Fighter(Recursed) with New Board
         if terminal(Nb) is False:
             ans.append(fighter(Nb,NAI))
+        #If End Then We append Ans
         else:
             ans.append(utility(Nb))
+        #Implemented Alpha-beta pruning
         if AI == X:
             if max(ans) is 1:
                 return 1
         else:
             if min(ans) is -1:
                 return -1
-
+    #Giving Last MAX/MIN as per The AI wanted
     if AI == X:
         return max(ans)
     else:

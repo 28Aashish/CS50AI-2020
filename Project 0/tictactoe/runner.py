@@ -112,10 +112,7 @@ while True:
         if user != player and not game_over:
             if ai_turn:
                 time.sleep(0.5)
-######################################################easy to different mode##################################################################
-                #move = ttt.easy(board)
                 move = ttt.minimax(board)
-######################################################easy to different mode##################################################################
                 board = ttt.result(board, move)
                 ai_turn = False
             else:

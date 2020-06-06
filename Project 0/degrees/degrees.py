@@ -93,22 +93,25 @@ def shortest_path(source, target):
     """
     # TODO
     #raise NotImplementedError
-    start = Node(state = source , parent = None , action = None)
     
+    #BFS Mechanism for Minimum Spanning i.e Queue type Frount
     frount=QueueFrontier()
-    
+
+    #Initilaiseing Starting Actor/Actoress
+    start = Node(state = source , parent = None , action = None)    
     frount.add(start)
     
-    
+    # Set for explored actors and Movies
     explored_actor=set()
     explored_movie=set()
-    
+    #Infite loop with exit only when Frount is empty or Got Solution
     while True:
         if frount.empty():
             #raise Exception("No Solution Exist")
             return None
-        
+        #Remove Queue Node from Frount
         node = frount.remove()
+        #checking result == node
         if node.state == target:
             result =[]
             while node.parent is not None:
@@ -116,15 +119,20 @@ def shortest_path(source, target):
                 node = node.parent
             result.reverse()
             return result
+        #Explored actor adding
         explored_actor.add(node.state)
         
+        #Varaible for explored movie check
         MID=None        
         
         for movie_id,person_id in neighbors_for_person(node.state):
+            #Neglected movie for explored movie
             if movie_id in explored_movie:
                 continue
+            #logic implimented for explored movie
             if MID != movie_id and MID is not None:
                 explored_movie.add(MID)
+            #checking result == node
             if person_id == target:
                 result =[(movie_id,person_id)]
                 while node.parent is not None:
@@ -132,9 +140,11 @@ def shortest_path(source, target):
                     node = node.parent
                 result.reverse()
                 return result
+            #Getting neighbours for node
             if person_id not in explored_actor and not frount.contains_state(person_id):
                 child=Node(state = person_id , parent = node , action = movie_id)
                 frount.add(child)
+            #MID update for explored_movie
             MID = movie_id
 
 def person_id_for_name(name):
