@@ -53,26 +53,19 @@ def load_data(directory):
 
 
 def main():
-    """
-    if len(sys.argv) != 2:
-        sys.exit("Usage: python degrees.py [directory]")
+    if len(sys.argv) > 2:
+            sys.exit("Usage: python degrees.py [directory]")
     directory = sys.argv[1] if len(sys.argv) == 2 else "large"
-    """
-    directory = "large"
-    
+
     # Load data from files into memory
     print("Loading data...")
     load_data(directory)
     print("Data loaded.")
-    
-    s="Emma Watson"
-    t="Jennifer Lawrence"
-    print(s)
-    print(t)
-    source = person_id_for_name(s)
+
+    source = person_id_for_name(input("Name: "))
     if source is None:
         sys.exit("Person not found.")
-    target = person_id_for_name(t)
+    target = person_id_for_name(input("Name: "))
     if target is None:
         sys.exit("Person not found.")
 
