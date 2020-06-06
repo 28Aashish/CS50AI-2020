@@ -42,6 +42,7 @@ def main():
     # Check for proper usage
     if len(sys.argv) != 2:    
         sys.exit("Usage: python heredity.py data.csv")
+    
     people = load_data(sys.argv[1])
     #people = load_data("data/family0.csv")
 
@@ -63,8 +64,8 @@ def main():
 
     # Loop over all sets of people who might have the trait
     names = set(people)
+    
     for have_trait in powerset(names):
-
         # Check if current set of people violates known information
         fails_evidence = any(
             (people[person]["trait"] is not None and
@@ -102,6 +103,7 @@ def load_data(filename):
     mother, father must both be blank, or both be valid names in the CSV.
     trait should be 0 or 1 if trait is known, blank otherwise.
     """
+    
     data = dict()
     with open(filename) as f:
         reader = csv.DictReader(f)
@@ -141,15 +143,20 @@ def joint_probability(people, one_gene, two_genes, have_trait):
         * everyone not in set` have_trait` does not have the trait.
     """
     #raise NotImplementedError
-
+    #Commulative Probability as 1 for Multiplicating
     CP=1
+    #Selecting Person from People
     for person in people:
+        #getting Parents
         mother = people[person]['mother']
         father = people[person]['father']
+        #If The person have one_gene
         if person in one_gene:
+            #No parents
             if mother is None or father is None:
                 P = PROBS["gene"][1]
             else:
+                #From Father
                 if father in one_gene:
                     p1=0.5                        
                 elif father in two_genes:
@@ -162,7 +169,7 @@ def joint_probability(people, one_gene, two_genes, have_trait):
                     p1 *= PROBS["mutation"]
                 else:
                     p1 *= 1- PROBS["mutation"]
-                
+            #From Mother                
                 if mother in one_gene:
                     p2 = 0.5                        
                 elif mother in two_genes:
@@ -176,42 +183,56 @@ def joint_probability(people, one_gene, two_genes, have_trait):
                 else:
                     p2 *= 1- PROBS["mutation"]
                 P = p1+p2
+            #Multipilng Trait Probability
             P *= PROBS["trait"][1][person in have_trait]
+        #If The person have two_gene
         elif person in two_genes:
+            #No Parent
             if mother is None or father is None:
                 P = PROBS["gene"][2]
             else:
-                if mother in one_gene:
+                #From Father
+                if father in one_gene:
                     P = 0.5
-                elif mother in two_genes:
+                elif father in two_genes:
                     P = 1 - PROBS["mutation"]
                 else:
                     P = PROBS["mutation"]
-                if father in one_gene:
+                #From Mother
+                if mother in one_gene:
                     P *= 0.5
-                elif father in two_genes:
+                elif mother in two_genes:
                     P *= 1 - PROBS["mutation"]
                 else:
                     P *= PROBS["mutation"]
+            #Multipilng Trait Probability
             P *= PROBS["trait"][2][person in have_trait]
+        
+        #if Have No gene
         else:
+            #No Parent
             if mother is None or father is None:
                 P = PROBS["gene"][0]
-            else :
-                if mother in one_gene:
-                    P = 0.5
-                elif mother in two_genes:
-                    P = 1 - PROBS["mutation"]
-                else:
-                    P = PROBS["mutation"]
+            else :    
+                #From Father
                 if father in one_gene:
-                    P *= 0.5
+                    P = 0.5
                 elif father in two_genes:
-                    P *= 1 - PROBS["mutation"]
+                    P = 1 - PROBS["mutation"]
                 else :
-                    P *= PROBS["mutation"]
-            P *= PROBS["trait"][0][person in have_trait]
+                    P = PROBS["mutation"]
+                #From Mother
+                if mother in one_gene:
+                    P *= 0.5
+                elif mother in two_genes:
+                    P *= 1 - PROBS["mutation"]
+                else:
+                    P *= PROBS["mutation"]            
+            #Multipilng Trait Probability
+            P *= PROBS["trait"][0][person in have_trait]            
+        #Overall Commulative Probability as Multiplicating every person 
         CP *= P
+    #returning Cummulative Probability
     return CP 
                                 
              
@@ -243,10 +264,9 @@ def normalize(probabilities):
     #raise NotImplementedError
     for person in probabilities:
         total = 0
+        
         for i in range(3):
             total += probabilities[person]["gene"][i]
-            #print(person)
-            #print(probabilities[person]["gene"][i])
         for i in range(3):
             probabilities[person]["gene"][i] /= total
         total = probabilities[person]["trait"][True] + probabilities[person]["trait"][False]

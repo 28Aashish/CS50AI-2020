@@ -11,12 +11,15 @@ SAMPLES = 10000
 def main():
     if len(sys.argv) != 2:
         sys.exit("Usage: python pagerank.py corpus")
+    
     corpus = crawl(sys.argv[1])
     #corpus=crawl("corpus0")
+    
     ranks = sample_pagerank(corpus, DAMPING, SAMPLES)
     print(f"PageRank Results from Sampling (n = {SAMPLES})")
     for page in sorted(ranks):
         print(f"  {page}: {ranks[page]:.4f}")
+    
     ranks = iterate_pagerank(corpus, DAMPING)
     print(f"PageRank Results from Iteration")
     for page in sorted(ranks):
@@ -60,14 +63,19 @@ def transition_model(corpus, page, damping_factor):
     a link at random chosen from all pages in the corpus.
     """
     #raise NotImplementedError
+    #Making Model
     model = dict()
     links = len(corpus[page])
+    #Checking Links
     if links != 0:
+        # Calculaing Constants as per formula
         for link in corpus:
             model[link] = (1-damping_factor)/len(corpus)
         for link in corpus[page]:
+        #Calculating recurring Factor as pr formula
             model[link] += damping_factor/links
     else :
+        #Equal Probabilty Distribution
         for link in corpus:
             model[link] = 1/len(corpus)
     return model
@@ -83,10 +91,12 @@ def sample_pagerank(corpus, damping_factor, n):
     PageRank values should sum to 1.
     """
     #raise NotImplementedError
+    #Sampling Method
     model = dict()
     for page in corpus:
         model[page]=0
     page =  random.choice(list(corpus.keys()))
+    #taking N Samples from From Choices
     for i in range(n):
         oldmodel = transition_model(corpus,page,damping_factor)
         for page in corpus:
@@ -105,16 +115,20 @@ def iterate_pagerank(corpus, damping_factor):
     PageRank values should sum to 1.
     """
     #raise NotImplementedError
+    #From Pagerank Iterative Method
     Rank = dict()
     for page in corpus:
         Rank[page]=1/len(corpus)
     diff = True
+    #Loop Till Deviation is less then 0.01%
+    #High Accuracy as Probabilty in range 1 to 0 thats Y 0.01% will be accurate enough
     while diff:
         oldRank = Rank.copy()
         diff =False
         for page in corpus:
+            #Formula as per Larry Page's Suggested
             Rank[page] = (1-damping_factor)/len(corpus) + damping_factor*adder(corpus,oldRank,page)
-            diff = diff or (abs(oldRank[page]-Rank[page]) > 0.001 ) 
+            diff = diff or (abs(oldRank[page]-Rank[page]) > 0.0001 ) 
 
     return Rank
 
