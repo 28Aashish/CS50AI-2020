@@ -60,27 +60,38 @@ def load_data(data_dir):
     corresponding `images`.
     """
     #raise NotImplementedError
+    #Image Dimension Set
     dim = (IMG_WIDTH , IMG_HEIGHT)
+    #Change directory 
     os.chdir(data_dir)
+    #Image List
     imgs = []
+    #Image Label List
     labels = []
     pwd = os.getcwd()
     print(f"inside {data_dir}")
+    
     for path in os.listdir():
+        #New Path for the Folder
         npath = os.path.join(pwd,path)
+        #Change directory
         os.chdir(npath)
         print(f"loading {path}")
+        #Loading all image from the New Path
         for img in os.listdir():
             i = cv2.imread(img)
+            #Resizeing Images
             if i.shape[0]> 30 or i.shape[1]> 30 : 
                 i = cv2.resize(i,dim,interpolation= cv2.INTER_AREA)
             elif i.shape[0] < 30 or i.shape[1] < 30 :
                 i = cv2.resize(i,dim,interpolation= cv2.INTER_LINEAR)
             else :
                 pass
+            #appendng Label and Image on List
             imgs.append(i)
             labels.append(int(path))
     print("Done Loading")
+    #Back to Same Directory
     os.chdir('../..')
     return (imgs,labels)
                 
@@ -92,14 +103,24 @@ def get_model():
     The output layer should have `NUM_CATEGORIES` units, one for each category.
     """
     #raise NotImplementedError
+    
     model = tf.keras.models.Sequential([
+    #2D Convolution
     tf.keras.layers.Conv2D(32, (3, 3), activation="relu", input_shape=(IMG_WIDTH, IMG_HEIGHT, 3)),
+    #Max Pooling
     tf.keras.layers.MaxPooling2D(pool_size=(2, 2)),
+    #2D Convolution
     tf.keras.layers.Conv2D(32, (3, 3), activation="relu", input_shape=(IMG_WIDTH, IMG_HEIGHT, 3)),
+    #Max Pooling
     tf.keras.layers.MaxPooling2D(pool_size=(2, 2)),
+    #Flatten Of Nodes
     tf.keras.layers.Flatten(),
+    #128 Nodes input
     tf.keras.layers.Dense(128, activation="relu"),
+    #NUM_CATEGORIES distribution
     tf.keras.layers.Dense(NUM_CATEGORIES, activation="softmax")])
+    
+    #Comipiling Technique
     model.compile(
     optimizer="adam",
     loss="categorical_crossentropy",
