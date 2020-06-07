@@ -67,18 +67,9 @@ def preprocess(sentence):
     character.
     """
     #raise NotImplementedError
-    #sentence = sentence.rstrip().lower().split(" ")
-    #for word in sentence:
-    #    if word.isalpha():
-    #        words.append(word)
-    #print("words checking")
-    #for word in words:
-    #    print(word)
-    words = [word.lower() for word in nltk.tokenize.word_tokenize(sentence) if word.isalpha() ]
     
-    #for word in words:
-    #    print(word)
-    #print("words checking complete")
+    # Selecting lowercase with word which are ONLY ALPHA Term
+    words = [word.lower() for word in nltk.tokenize.word_tokenize(sentence) if word.isalpha() ]
     
     return words
             
@@ -91,8 +82,11 @@ def np_chunk(tree):
     noun phrases as subtrees.
     """
     #raise NotImplementedError
+
+    #considering Chunks of branch
     chuck = []
     for subtree in tree.subtrees():
+        #If Label of Branch is NP then Checking subtree Lablels
         if subtree.label() == "NP" and check(subtree):     
             chuck.append(subtree)
     return chuck
@@ -100,7 +94,7 @@ def np_chunk(tree):
 def check(subtree):
     for branch in next(subtree.subtrees()):
         if branch.label() == "NP":
-            return True
+            return False
     return True
 
 

@@ -57,16 +57,22 @@ def load_files(directory):
     `.txt` file inside that directory to the file's contents as a string.
     """
     #raise NotImplementedError
+    
+    #initialising dictionary
     material = dict()
+    #Changing Working directory
     os.chdir(directory)
     pwd = os.getcwd()
     print(f"inside {pwd}")
+    #Checking Files in The directorys
     for file in os.listdir():
         with open(file, encoding="utf8") as f:
             material[file] = f.read().replace("/n"," ")
             f.close()
     print("Done Loading") 
+    #Back to Old directory
     os.chdir('..')
+    
     return material
 
 def tokenize(document):
@@ -78,7 +84,12 @@ def tokenize(document):
     punctuation or English stopwords.
     """
     #raise NotImplementedError
-    words = [word.lower() for word in nltk.tokenize.word_tokenize(document) if word.isalpha() or word.isnumeric()]# if word not in nltk.corpus.stopwards.words("english") ]
+
+    #Words which are alphanumeric only are Considered
+    #words = [word.lower() for word in nltk.tokenize.word_tokenize(document) if word not in nltk.corpus.stopwards.words("english")]
+    #nltk.corpus.stopwards.words("English") isn't Working' so Tried similar but alternative for same
+    words = [word.lower() for word in nltk.tokenize.word_tokenize(document) if word.isalpha() or word.isnumeric()]
+    
     return words
 
 def compute_idfs(documents):
@@ -90,6 +101,8 @@ def compute_idfs(documents):
     resulting dictionary.
     """
     #raise NotImplementedError
+
+    
     idfs = dict()
     for sentence in documents:
         contents = documents[sentence]
@@ -97,10 +110,7 @@ def compute_idfs(documents):
             if word in idfs.keys():
                 continue
             else :
-                #f = Counter(nltk.ngrams(documents,1))
-                #f = sum(word in contents)
-                #total = sum
-                #f = sum([1 for temp in documents if word in documents[temp]])
+
                 c = 0
                 t = 0
                 for tmp in documents:
@@ -142,7 +152,7 @@ def top_sentences(query, sentences, idfs, n):
         words = sentences[sentence]
         wc = sum( words.count(word) for word in query)
         total = sum( idfs[word] for word in query if word in words)
-        ts[sentence] = (total,wc/len(words))
+        ts[sentence] = (total,wc /len(words) )
     ts = sorted(ts.keys(),key= lambda x : ts[x] , reverse= True)
     if len(ts) < n:
         return list(ts)
