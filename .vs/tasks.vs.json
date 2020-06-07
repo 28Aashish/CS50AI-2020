@@ -1,0 +1,10 @@
+{
+  "version": "0.2.1",
+  "tasks": [
+    {
+      "taskLabel": "task-degrees",
+      "appliesTo": "Project 0/degrees/degrees.py",
+      "type": "launch"
+    }
+  ]
+}
