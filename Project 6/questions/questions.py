@@ -3,7 +3,7 @@ import sys
 import os
 import math
 from nltk.corpus import stopwords
-from collections import Counter
+import string
 
 FILE_MATCHES = 1
 SENTENCE_MATCHES = 1
@@ -12,12 +12,12 @@ SENTENCE_MATCHES = 1
 def main():
 
     # Check command-line arguments
-    if len(sys.argv) != 2:
-        sys.exit("Usage: python questions.py corpus")
+    #if len(sys.argv) != 2:
+    #    sys.exit("Usage: python questions.py corpus")
 
     # Calculate IDF values across files
-    files = load_files(sys.argv[1])
-    #files = load_files("corpus")
+    #files = load_files(sys.argv[1])
+    files = load_files("corpus")
     
     file_words = {
         filename: tokenize(files[filename])
@@ -27,8 +27,8 @@ def main():
 
     # Prompt user for query
     
-    query = set(tokenize(input("Query: ")))
-    #query = set(tokenize("What are the types of supervised learning?"))
+    #query = set(tokenize(input("Query: ")))
+    query = set(tokenize("How do neurons connect in a neural network?"))
     
     # Determine top file matches according to TF-IDF
     filenames = top_files(query, file_words, file_idfs, n=FILE_MATCHES)
@@ -86,9 +86,8 @@ def tokenize(document):
     #raise NotImplementedError
 
     #Words which are alphanumeric only are Considered
-    #words = [word.lower() for word in nltk.tokenize.word_tokenize(document) if word not in nltk.corpus.stopwards.words("english")]
-    #nltk.corpus.stopwards.words("English") isn't Working' so Tried similar but alternative for same
-    words = [word.lower() for word in nltk.tokenize.word_tokenize(document) if word.isalpha() or word.isnumeric()]
+    pl = list(nltk.corpus.stopwords.words("English")) + list(string.punctuation)
+    words = [word.lower() for word in nltk.tokenize.word_tokenize(document) if word.lower() not in pl ]
     
     return words
 
@@ -101,23 +100,20 @@ def compute_idfs(documents):
     resulting dictionary.
     """
     #raise NotImplementedError
-
-    
     idfs = dict()
-    for sentence in documents:
-        contents = documents[sentence]
+    totalDocuments = len(documents)    
+    for Doc in documents:
+        contents = documents[Doc]
         for word in contents :
             if word in idfs.keys():
                 continue
             else :
-
-                c = 0
-                t = 0
+                count = 0
                 for tmp in documents:
                     if word in documents[tmp]:
-                        c += 1
-                    t += 1
-                idf = math.log(t / c)
+                        count += 1
+                        continue
+                idf = math.log(totalDocuments / count)
                 idfs[word] = idf   
     return idfs   
 
@@ -129,14 +125,22 @@ def top_files(query, files, idfs, n):
     files that match the query, ranked according to tf-idf.
     """
     #raise NotImplementedError
+
     tfidfs = dict()
     for file in files:
         s = 0
-        for word in query:
-            idf = idfs[word]
-            s += files[file].count(word)*idf
+        for word in set(query):
+            if word in idfs.keys():
+                idf = idfs[word]
+                fr = files[file].count(word) 
+                s += fr * idf
         tfidfs[file] = s
-    return tfidfs
+    tfidf =sorted(tfidfs ,key= lambda x : tfidfs[x] , reverse= True)
+    if len(tfidf) < n:
+        return tfidf
+    else :
+        return tfidf[:n]
+
 
 def top_sentences(query, sentences, idfs, n):
     """
@@ -150,18 +154,18 @@ def top_sentences(query, sentences, idfs, n):
     ts = dict()
     for sentence in sentences:
         words = sentences[sentence]
-        wc = sum( words.count(word) for word in query)
-        total = sum( idfs[word] for word in query if word in words)
-        ts[sentence] = (total,wc /len(words) )
-    ts = sorted(ts.keys(),key= lambda x : ts[x] , reverse= True)
+        lwords = len(words)
+
+        term =   sum( words.count(word)  for word in set(query))
+        idf  =   sum( idfs[word]         for word in set(query) if word in words)
+
+        ts[sentence] = (idf , term/lwords)
+    ts =sorted(ts ,key= lambda x : ts[x] , reverse= True)
     if len(ts) < n:
         return list(ts)
     else :
         ts = list(ts)
         return ts[:n]
-        
-
-
 
 if __name__ == "__main__":
     main()
