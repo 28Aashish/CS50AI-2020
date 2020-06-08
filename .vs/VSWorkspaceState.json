@@ -1,8 +1,14 @@
 {
   "ExpandedNodes": [
     "",
-    "\\Project 0",
-    "\\Project 0\\degrees"
+    "\\Project 0\\degrees",
+    "\\Project 3\\crossword",
+    "\\Project 4\\shopping",
+    "\\Project 5\\traffic",
+    "\\Project 6",
+    "\\Project 6\\parser\\sentences",
+    "\\Project 6\\questions"
   ],
+  "SelectedNode": "\\Project 6\\questions\\questions.py",
   "PreviewInSolutionExplorer": false
 }

@@ -29,9 +29,13 @@ class StackFrontier():
 
 class QueueFrontier(StackFrontier):
 
-    def remove(self):
+    def remove(self,target):
         if self.empty():
             raise Exception("empty frontier")
+        elif self.contains_state(target):
+            for node in self.frontier:
+                if node.state == target:
+                    return node
         else:
             node = self.frontier[0]
             self.frontier = self.frontier[1:]
