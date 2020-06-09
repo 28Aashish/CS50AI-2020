@@ -222,13 +222,6 @@ def fighter(board,AI):
         #If End Then We append Ans
         else:
             ans.append(utility(Nb))
-        #Implemented Alpha-beta pruning
-        if AI == X:
-            if max(ans) is 1:
-                return 1
-        else:
-            if min(ans) is -1:
-                return -1
     #Giving Last MAX/MIN as per The AI wanted
     if AI == X:
         return max(ans)
