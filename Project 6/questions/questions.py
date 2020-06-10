@@ -12,12 +12,12 @@ SENTENCE_MATCHES = 1
 def main():
 
     # Check command-line arguments
-    #if len(sys.argv) != 2:
-    #    sys.exit("Usage: python questions.py corpus")
+    if len(sys.argv) != 2:
+        sys.exit("Usage: python questions.py corpus")
 
     # Calculate IDF values across files
-    #files = load_files(sys.argv[1])
-    files = load_files("corpus")
+    files = load_files(sys.argv[1])
+    #files = load_files("corpus")
     
     file_words = {
         filename: tokenize(files[filename])
@@ -27,8 +27,8 @@ def main():
 
     # Prompt user for query
     
-    #query = set(tokenize(input("Query: ")))
-    query = set(tokenize("How do neurons connect in a neural network?"))
+    query = set(tokenize(input("Query: ")))
+    #query = set(tokenize("How do neurons connect in a neural network?"))
     
     # Determine top file matches according to TF-IDF
     filenames = top_files(query, file_words, file_idfs, n=FILE_MATCHES)

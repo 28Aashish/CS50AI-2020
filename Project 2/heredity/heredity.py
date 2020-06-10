@@ -218,16 +218,16 @@ def joint_probability(people, one_gene, two_genes, have_trait):
                 if father in one_gene:
                     P = 0.5
                 elif father in two_genes:
-                    P = 1 - PROBS["mutation"]
-                else :
                     P = PROBS["mutation"]
+                else :
+                    P = 1-PROBS["mutation"]
                 #From Mother
                 if mother in one_gene:
                     P *= 0.5
                 elif mother in two_genes:
-                    P *= 1 - PROBS["mutation"]
+                    P *= PROBS["mutation"]
                 else:
-                    P *= PROBS["mutation"]            
+                    P *= 1-PROBS["mutation"]            
             #Multipilng Trait Probability
             P *= PROBS["trait"][0][person in have_trait]            
         #Overall Commulative Probability as Multiplicating every person 
