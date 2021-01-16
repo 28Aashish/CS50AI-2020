@@ -1,0 +1,33 @@
+
+The following are the my solutions for CS50AI 
+
+Project 0 Degrees
+https://youtu.be/WEpyCVWxD6Q
+Project 0 Tictactoe
+https://youtu.be/BXHBq6qDj8A
+
+Project 1 Knights
+https://youtu.be/1llv5JVlBQE
+Project 1 Minesweeper
+https://youtu.be/tFHu3dV92d0
+
+Project 2 Pagerank
+https://youtu.be/_rVs1x6W4os
+Project 2 Heredity
+https://youtu.be/C0A0R3MMqis
+
+Project 3 Crossword
+https://youtu.be/jZG2X1dklXE
+
+Project 4 Shopping
+https://youtu.be/TVToyyKNfQs
+Project 4 Nim
+https://youtu.be/iZQvbpyn_o0
+
+Project 5 Traffic
+https://youtu.be/1TW3E12w_t0
+
+Project 6 Parser
+https://youtu.be/6mYiovPjjSY
+Project 6 Questions
+https://youtu.be/5nGeZgOAD94
